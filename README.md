@@ -99,4 +99,6 @@ AI Mentor Chatbot Project.json
 
 ---
 
+<img width="1625" height="803" alt="Screenshot 2025-11-22 175846" src="https://github.com/user-attachments/assets/11b71a16-73bb-4fe4-81f6-a0e1fc33c303" />
+
 
