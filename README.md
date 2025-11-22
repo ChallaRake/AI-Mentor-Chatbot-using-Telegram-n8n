@@ -88,3 +88,15 @@ Use the exported JSON file in:
 
 ```bash
 AI Mentor Chatbot Project.json
+```
+---
+
+## 🧠 Memory & Behavior
+
+- Stores up to 50 previous messages
+- Maintains tone as supportive and beginner-friendly
+- Requests clarification if user input is incomplete
+
+---
+
+
