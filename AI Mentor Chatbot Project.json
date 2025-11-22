@@ -1,0 +1,415 @@
+{
+  "name": "AI Mentor Chatbot Project",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": false
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        -128
+      ],
+      "id": "2db9f8da-d479-40a5-bc60-5643bb5a810a",
+      "name": "Telegram Trigger",
+      "webhookId": "47477157-7694-4324-935a-bc4bb13947e0",
+      "credentials": {
+        "telegramApi": {
+          "id": "8Jqsn7ryqTFlEgRv",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "456a6a9c-a981-4d67-b5cc-69dc9740a847",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "hi",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "9134532a-a84c-4e84-9321-d8c40aa7692c",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "hello",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a4903565-6c59-4cad-8d87-6a9898fcced4",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "hey",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        -128
+      ],
+      "id": "afebbf2c-de59-44a4-ad01-2fa41572c3e8",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful educational chatbot. You've to clarify the Doubt in a given Subject. Below are the details:\n\nSubject: {{ $('Send Message & Wait (Subject Selection)').item.json.data['Choose one subject'] }}\nDoubt: {{ $json.data.text }}\n\n",
+        "options": {
+          "systemMessage": "You are an intelligent and friendly educational assistant. \nYour role is to understand student queries, no matter how unclear, incomplete, or informal they are.\n\nGuidelines:\n- Respond in simple and clear language.\n- Explain concepts with examples when needed.\n- Keep responses beginner-friendly unless the query requires advanced explanations.\n- If the student's doubt is unclear or incomplete, first ask a clarifying question instead of assuming.\n- Avoid unnecessary technical jargon unless required.\n- Maintain a supportive and encouraging tone.\n- Do not generate harmful, rude, or irrelevant content.\n\nThe output shouldn't exceed more than 600 characters"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        320,
+        -224
+      ],
+      "id": "24eef665-5890-43eb-893e-5496a137051c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -16
+      ],
+      "id": "a90791f3-a22f-40a3-92b6-80886428c6f4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QoACoJaDrhXMiDKn",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        -208
+      ],
+      "id": "4e0d1466-2286-4548-8839-d2e9d49eceed",
+      "name": "Send a text message",
+      "webhookId": "8c1f3177-96f8-40bb-9209-e4e5ffbaf8c0",
+      "credentials": {
+        "telegramApi": {
+          "id": "8Jqsn7ryqTFlEgRv",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        16
+      ],
+      "id": "11bd1355-671b-45fa-8f7d-e4cce4599206",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "content": "1️⃣ Telegram Trigger\n\nThis node listens for incoming messages from users on Telegram.\n\nWhenever a user sends a message to the bot, this node activates and passes the message into the workflow.",
+        "height": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -592,
+        -336
+      ],
+      "typeVersion": 1,
+      "id": "4e803a86-6750-4dd4-b71b-d264a52f3d87",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "2️⃣ If Node\n\nThis node checks whether the user's message is a greeting such as \"hi\", \"hello\", or \"hey\".\n\nIf the message matches any of the conditions, the workflow continues to the next step.\n\nOtherwise, nothing happens (workflow ends).",
+        "height": 240,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -336,
+        -352
+      ],
+      "typeVersion": 1,
+      "id": "bcf3cedb-ca14-44cc-b80b-1b12a8baac95",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "3️⃣ Send Message & Wait (Subject Selection)\n\nSends a message asking the user to choose a subject from a dropdown list (Python, EDA, ML or Deep Learning).\n\nThe workflow waits until the user selects one option before continuing.",
+        "height": 256,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "9f0f5c14-24e5-484e-bf98-7958148d2f06",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "4️⃣ Send Message & Wait (Ask Doubt)\n\nAfter the subject is selected, this node asks the user to type the exact doubt they have in that subject.\n\nCollects a free-text response and passes it forward.",
+        "height": 240,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "3cc02933-e829-4297-9abf-81a9d1cba0b5",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $json.message.chat.id }}",
+        "message": "=Hi,  {{ $json.message.chat.first_name }}\n\nPlease submit the Response by clicking the below 'Respond' option",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Choose one subject",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Python"
+                  },
+                  {
+                    "option": "EDA"
+                  },
+                  {
+                    "option": "Machine Learning"
+                  },
+                  {
+                    "option": "Deep Learning"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        -224
+      ],
+      "id": "533cc387-c16f-48de-95ad-b2de9c43260b",
+      "name": "Send Message & Wait (Subject Selection)",
+      "webhookId": "4ff590c0-cc7a-4280-8968-66963859ae00",
+      "credentials": {
+        "telegramApi": {
+          "id": "8Jqsn7ryqTFlEgRv",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "message": "=Could you please tell me what is your doubt in  {{ $json.data['Choose one subject'] }}?",
+        "responseType": "freeText",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        -224
+      ],
+      "id": "599d7492-c079-454f-a55d-5a56d5883371",
+      "name": "Send Message & Wait (Ask Doubt)",
+      "webhookId": "9c38a79c-1900-4551-943c-0f85f3727443",
+      "credentials": {
+        "telegramApi": {
+          "id": "8Jqsn7ryqTFlEgRv",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "5️⃣ AI Agent (LangChain Agent)\n\nThis node generates the final chatbot response.\n\nIt uses:\n\nThe chosen subject\n\nThe user’s doubt\n\nThe system instructions (tone, explanation rules)\n\nIt processes these inputs and prepares a suitable reply.",
+        "height": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        -496
+      ],
+      "typeVersion": 1,
+      "id": "67d59c32-b5ef-44b2-b270-b6f74b437815",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "6️⃣ Send Text Message\n\nThis sends the AI-generated answer back to the user on Telegram.\n\nIt ensures the conversation feels natural by replying inside the same Telegram chat.",
+        "height": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        576,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "e10c02c1-e24a-476f-9cd8-e5eaedf6f501",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send Message & Wait (Subject Selection)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Message & Wait (Subject Selection)": {
+      "main": [
+        [
+          {
+            "node": "Send Message & Wait (Ask Doubt)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Message & Wait (Ask Doubt)": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c45bcd3b-bcdf-440f-aa1c-5ed372bfc088",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "93f76fed8a5e6ec6e232d8ac3f4fcf2363ada63fbe7d78618f417ee602eb4cfe"
+  },
+  "id": "74KdamB1L1OPp60T",
+  "tags": []
+}
