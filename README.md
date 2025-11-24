@@ -99,6 +99,13 @@ AI Mentor Chatbot Project.json
 
 ---
 
+## 📹 Demo Video
+
+👉 **Watch the full workflow demo here:**  
+### [*AI Mentor Chatbot Automation*](https://www.linkedin.com/posts/challa-rakesh-reddy_automation-n8n-telegrambot-activity-7398699428133552128-_0gw?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD7NTjAB5LIcCGe6w75x6giyS2sV95rQD14)
+
+---
+
 <img width="1625" height="803" alt="Screenshot 2025-11-22 175846" src="https://github.com/user-attachments/assets/11b71a16-73bb-4fe4-81f6-a0e1fc33c303" />
 
 
